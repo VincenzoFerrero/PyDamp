@@ -68,10 +68,10 @@ def trim_question_1():
 # look into pulling from excel or csv, so that editing quesitons is organic##        
 def initial_questions():
     
-    global name
-    global insitution
-    global advisor
-    
+#    global name
+#    global insitution
+#    global advisor
+#    
     name = []
     insitution = []
     advisor = []
@@ -137,12 +137,54 @@ def initial_questions():
   
     return user_information(name, advisor, insitution, datetime.datetime.now().strftime('%x'))
         
-    
-    
-    
 
+# This looks at asking the user about general information of the product they wish to add    
+def system_questions():     
+    
+    print('')
+    print('In the current verison of PyDamp you can only add products to the OSU Design Repository.')
+    print('')
+    
+#    user_prompt = input('Do you wish to add a product to the OSU Design Repository? /n')
+#    
+#    if user_pr
+    
+    system = input('What is the name of the product? ')
+    print('')
+    system_description = input('Concisely describe the product: ')
 
+ 
+    system_type_list  = ['null','consumer','industrial','aerospace','scientific','biological','failure','home and garden','toys, kids and baby','sports and outdoors','electronics and computer',
+                         'tools and automotive','health and beauty','tools and automotive','plants','animals','office','small appliances','garden','major appliances','entertainment',
+                         'computer hardware','automotive','tools','powertools','hardware','hygiene','appliance','medical','cellular','miscellaneous']
+    print('\n'.join('{}: {}'.format(*k) for k in enumerate(system_type_list)))    
+
+    success = False
+    trys = 0
+    while success == False:
+        try:
+            system_type = int(input('Using the system types above, what number most fits your product type? '))
+            if system_type > 29 or system_type < 0:
+                if trys >= 2:
+                    print('Number of attempts reached. Please rerun the package and visit the documentation.')
+                    return 'fail'
+                else:
+                    print('Number inputed not found on supplied list. Try again...')
+                    trys = trys + 1 
+            else:
+                success = True
+        except ValueError:
+            print( 'That was not a valid number.  Try again...')
+            
+        
+            
+        
+    return system,system_description,system_type
+    
+    
 
 #Welcome()    
 #print(initial_questions().__dict__)
 #trim_question_1()
+#system_questions()
+    

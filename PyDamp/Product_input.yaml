@@ -1,0 +1,100 @@
+---
+
+#Welcome to the PyDamp YAML Input Document
+
+## PLEASE DO NOT MODIFY THE KEYS, AND FORMAT
+## FOLLOW THE ENTRY FORMAT SHOWN IN THE EXAMPLE
+## DOUBLE CHECK YOUR INPUTS, WE STRIVE TO MAINTAIN ACCURACY IN THE OSU DESIGN REPOSITORY
+## SOME INFORMATION CAN BE SUBJECTIVE, PLEASE USE YOU BEST REASONING
+## THANK YOU FOR YOUR CONTRIBUTION
+
+## ONE YAML FILE PER PRODUCT
+
+## When using the provided indices, enter the index number that corresponds with the entry value.
+# EXAMPLEl:    1 | Consumer , System_Type: 1
+
+
+
+## USER INFORMATION
+# Please provide your name. 
+User_Name: 
+
+# Are you an OSU Student? (Only yes or no will be accepted)
+OSU_Student:
+
+#If you are an OSU student, Who is your Advisor?
+#If you are not an OSU student, What entity do you represent?
+Employer: 
+
+
+## SYSTEM INFORMATION
+# The following section gathers the overall data for the Product
+
+# What is the system name?
+System_Name: 
+
+#Please write a consise description of the product.
+System_Description:  
+
+#Reference the included index table CSV to determine the System Type.
+System_Type: 
+
+
+
+## BILL OF MATERIAL INFORMATION
+##PLEASE THE FOLLOWING THE FORMAT##
+#   - [Name,Description,Component Basis,Material]
+
+BOM:
+    - 
+    
+    
+## SYSTEM ASSEMBLY INFORMATION
+
+## REMINDER SYSTEM INDEX IS 0 AND SHOULD BE THE DEFAULT IF RELATIONSHIP IS UNKNOWN
+
+# In the following list please indext the PARENT of each component 
+# EXAMPLE: -[Housing,protective cover of product,50,15] would have a parent of system
+# the Assembly_Data for entry woulf be -[0]
+
+Assembly_Data:
+    - [
+    
+    
+## SYSTEM FUNCTION INFORMATON
+# Use the function index to denote the functional basis terms of each component.
+
+## COMPONENTS CAN HAVE MULTIPLE FUNCTIONS 
+# denote this as -[#,#,#] .....etc.
+
+Function_Data:
+    - 
+    
+    
+## SYSTEM FLOW INFORMATION
+# This sections is used to collect advanced assembly information
+# For each of the functions listed in the Function_Data you need to denote:
+# the input flow, input component, the the output component, adn output flow
+
+# - [input_flow,input_component,output_component,outout_flow]
+
+# a combonation of the above examples where one of the function entry looks like this:
+# - [#,#] but the second functions has multiple flows, use a  triple nest list
+# info = input_flow,input_component,output_component,outout_flow
+# Example: - [[info1],[[info2-1],[info2-2]]]
+       
+
+## Not all components have flows. 
+# As such if there is not clear flow information to input please input a place holder of -[false]
+# If the input flow is external of the product, input -[#,external,#,#]
+# If the output flow is external of the product, input -[#,#,external,#]
+## If you know there is a flow into/out of a component but do not know the orgin/destination within the system input
+# unknown component input, -[#,internal,#,#]
+# unknown component output, -[#,#,internal,#]
+
+
+Flow_Data: 
+    - 
+    
+    
+    
