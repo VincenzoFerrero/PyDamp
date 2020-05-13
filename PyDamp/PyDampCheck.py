@@ -10,8 +10,8 @@ import yaml
 
 stream = open("Example_Product_input.yaml", 'r')
 product_dict = yaml.load(stream, Loader=yaml.UnsafeLoader)
-for key, value in product_dict.items():
-   print (key + " : " + str(value))
+#for key, value in product_dict.items():
+#   print (key + " : " + str(value))
         
         
 def check_user_name(product_dict):
@@ -272,10 +272,8 @@ def check_assembly_data(product_dict):
         
         #BOM entry length assertion
         assert len(Parent_of_component) == 1, 'assembly data for component ' + str(i+1) + ' entry is improperly formated.'
-        
-        
-        assert type(Parent_of_component[0]) == int, 'component ' + str(i+1) + ' requires integer assembly data input' 
-        assert 0 <= Parent_of_component[0] <= len(BOM), 'component ' + str(i+1) + ' assembly data input in not in range of the BOM inputs'      
+        assert type(Parent_of_component[0]) == int, 'assembly data ' + str(i+1) + ' requires integer assembly data input' 
+        assert 0 <= Parent_of_component[0] <= len(BOM), 'assembly data ' + str(i+1) + ' assembly data input in not in range of the BOM inputs'      
  
 
 
@@ -311,14 +309,14 @@ def check_function_data(product_dict):
             
             #BOM entry length assertion
             assert type(Function_of_component) == int, 'Function data for component ' + str(i+1) + ' entry is improperly formated.'
-            assert 1 <= Function_of_component <= 53, 'component ' + str(i+1) + ' assembly data input in not in range of the BOM inputs' 
+            assert 1 <= Function_of_component <= 53, 'component ' + str(i+1) + ' assembly data input in not in range of the Function inputs' 
 
 
 
 def check_flow_data(product_dict):
     
     
-    """ This function checks for errors in the BOM input
+    """ This function checks for errors in the flow input
     
     Parameters - YAML for product information .dict
     ----------
@@ -355,8 +353,8 @@ def check_flow_data(product_dict):
                 for j in range(len(Flow_of_component)):
                     
                     multi_flow = Flow_of_component[j]
-                    if multi_flow == bool or type(Flow_of_component) == str:
-                        assert multi_flow == False, 'component ' + str(i+1) + ' has error in false naming if function is unknown'
+                    if type(multi_flow[0]) == bool or type(Flow_of_component[j][0]) == str:
+                        assert multi_flow == False, 'component ' + str(i+1) + ' has error in false naming if flow is unknown or must be an integer'
                         
                     else:
                         assert type(multi_flow[0]) == int, 'Flow data for component '+ str(i+1) + ' function ' + str(k+1) + ' needs to be an integer.'
@@ -373,7 +371,7 @@ def check_flow_data(product_dict):
                             assert multi_flow[2] == 'internal' or multi_flow[2] == 'external', 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input error for assigning internal or external'
                         else:
                             assert type(multi_flow[2]) == int, 'Flow data for component '+ str(i+1) + ' function ' + str(k+1) + ' needs to be an integer, internal, or external.'
-                            assert 0 <= Flow_of_component[2] <= len(BOM), 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the BOM inputs'
+                            assert 0 <= multi_flow[2] <= len(BOM), 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the BOM inputs'
         
                         assert type(multi_flow[3]) == int, 'Flow data for component '+ str(i+1) + ' function ' + str(k+1) + ' needs to be an integer.'
                         assert 0 <= multi_flow[3] <= 45, 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the flow index'                                    
@@ -383,8 +381,10 @@ def check_flow_data(product_dict):
                 
             except TypeError: # this is if there is not a multi flow
                 if type(Flow_of_component) == bool or type(Flow_of_component) == str:
-
-                    assert Flow_of_component == False, 'component ' + str(i+1) + ' function ' +str(k+1) + ' has error in false naming if function is unknown'
+                    assert Flow_of_component == False, 'component ' + str(i+1) + ' function ' +str(k+1) + ' has error in false naming if function is unknown or must be an integer'
+                    
+                elif type(Flow_of_component[0]) == bool or type(Flow_of_component[0]) == str:
+                    assert Flow_of_component == False, 'component ' + str(i+1) + ' function ' +str(k+1) + ' has error in false naming if function is unknown or must be an integer'
                     
                 else:
                     assert type(Flow_of_component[0]) == int, 'Flow data for component '+ str(i+1) + ' function ' + str(k+1) + ' needs to be an integer.'
@@ -413,8 +413,8 @@ def check_flow_data(product_dict):
                 
             
 
-
-check_flow_data(product_dict)
+#
+#check_flow_data(product_dict)
 
 
 

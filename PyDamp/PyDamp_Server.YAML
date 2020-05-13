@@ -1,0 +1,23 @@
+---
+
+## Welcome to the PyDamp PSQL Connection Yaml 
+
+## Please enter the required server information for your hosted or local copy of 
+## the OSU design repositiory
+
+
+####### READ ME FOR INFORMATION ON HOW TO FIND SERVER INFORMATION ##########
+
+## Provided input are often the defaults for local server connections ##
+
+user: postgres
+
+password: password
+
+host: 127.0.0.1
+ 
+port: 5432
+
+database: osu_design_repo_local
+
+
