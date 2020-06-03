@@ -272,8 +272,8 @@ def check_assembly_data(product_dict):
         
         #BOM entry length assertion
         assert len(Parent_of_component) == 1, 'assembly data for component ' + str(i+1) + ' entry is improperly formated.'
-        assert type(Parent_of_component[0]) == int, 'assembly data ' + str(i+1) + ' requires integer assembly data input' 
-        assert 0 <= Parent_of_component[0] <= len(BOM), 'assembly data ' + str(i+1) + ' assembly data input in not in range of the BOM inputs'      
+        assert type(Parent_of_component[0]) == int, 'assembly data for component ' + str(i+1) + ' requires integer assembly data input' 
+        assert 0 <= Parent_of_component[0] <= len(BOM), 'assembly data for component ' + str(i+1) + ' assembly data input in not in range of the BOM inputs'      
  
 
 
@@ -364,14 +364,14 @@ def check_flow_data(product_dict):
                             assert multi_flow[1] == 'internal' or multi_flow[1] == 'external', 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input error for assigning internal or external'
                         else:
                             assert type(multi_flow[1]) == int, 'Flow data for component '+ str(i+1) + ' function ' + str(k+1) + ' needs to be an integer, internal, or external.'
-                            assert 0 <= multi_flow[1] <= len(BOM), 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the BOM inputs'
+                            assert 1 <= multi_flow[1] <= len(BOM), 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the BOM inputs'
                         
                         
                         if type(multi_flow[2]) == str:
                             assert multi_flow[2] == 'internal' or multi_flow[2] == 'external', 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input error for assigning internal or external'
                         else:
                             assert type(multi_flow[2]) == int, 'Flow data for component '+ str(i+1) + ' function ' + str(k+1) + ' needs to be an integer, internal, or external.'
-                            assert 0 <= multi_flow[2] <= len(BOM), 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the BOM inputs'
+                            assert 1 <= multi_flow[2] <= len(BOM), 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the BOM inputs'
         
                         assert type(multi_flow[3]) == int, 'Flow data for component '+ str(i+1) + ' function ' + str(k+1) + ' needs to be an integer.'
                         assert 0 <= multi_flow[3] <= 45, 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the flow index'                                    
@@ -394,14 +394,14 @@ def check_flow_data(product_dict):
                         assert Flow_of_component[1] == 'internal' or Flow_of_component[1] == 'external', 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input error for assigning internal or external'
                     else:
                         assert type(Flow_of_component[1]) == int, 'Flow data for component '+ str(i+1) + ' function ' + str(k+1) + ' needs to be an integer, internal, or external.'
-                        assert 0 <= Flow_of_component[1] <= len(BOM), 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the BOM inputs'
+                        assert 1 <= Flow_of_component[1] <= len(BOM), 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the BOM inputs'
                     
                     
                     if type(Flow_of_component[2]) == str:
                         assert Flow_of_component[2] == 'internal' or Flow_of_component[2] == 'external', 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input error for assigning internal or external'
                     else:
                         assert type(Flow_of_component[2]) == int, 'Flow data for component '+ str(i+1) + ' function ' + str(k+1) + ' needs to be an integer, internal, or external.'
-                        assert 0 <= Flow_of_component[2] <= len(BOM), 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the BOM inputs'
+                        assert 1 <= Flow_of_component[2] <= len(BOM), 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the BOM inputs'
     
                     assert type(Flow_of_component[3]) == int, 'Flow data for component '+ str(i+1) + ' function ' + str(k+1) + ' needs to be an integer.'
                     assert 0 <= Flow_of_component[3] <= 45, 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the flow index'                
@@ -409,8 +409,18 @@ def check_flow_data(product_dict):
 
                     
                 
-                
-                
+def check_product_YAML(input_dict):
+    
+    check_user_name(product_dict)
+    check_osu_student(product_dict)
+    check_employer(product_dict)
+    check_system_name(product_dict)
+    check_system_description(product_dict)
+    check_system_type(product_dict)
+    check_BOM(product_dict)
+    check_assembly_data(product_dict)
+    check_function_data(product_dict)
+    check_flow_data(product_dict)               
             
 
 #

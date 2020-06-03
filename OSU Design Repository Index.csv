@@ -1,0 +1,32 @@
+id,system_type
+0,all
+1,consumer
+2,industrial
+3,aerospace
+4,scientific
+5,biological
+6,failure
+7,home and garden
+9,sports and outdoors
+10,electronics and computer
+11,tools and automotive
+12,health and beauty
+13,tools and automotive
+14,plants 
+15,animals
+16,office
+18,garden
+20,entertainment
+21,computer hardware
+22,automotive
+23,tools
+24,powertools
+25,hardware
+26,hygiene
+27,appliance
+28,medical
+29,cellular
+30,miscellaneous
+8,"toys, kids and baby"
+17,small appliances
+19,major appliances

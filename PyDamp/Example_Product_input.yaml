@@ -16,8 +16,8 @@
 
 
 ## USER INFORMATION
-# Please provide your name. 
-User_Name: Vinny
+# Please provide your name. (First Last)
+User_Name: Vinny Ferrero
 
 # Are you an OSU Student? (Only yes or no will be accepted)
 OSU_Student: yes
@@ -25,6 +25,10 @@ OSU_Student: yes
 #If you are an OSU student, Who is your Advisor?
 #If you are not an OSU student, What entity do you represent?
 Employer: Bryony
+
+
+# optional: Please enter you email
+Email: ferrerov@oregonstate.edu
 
 
 ## SYSTEM INFORMATION
@@ -126,7 +130,7 @@ Function_Data:
 
 
 ## Not all components have flows. 
-# As such if there is not clear flow information to input please input a place holder of -[false]
+# As such if there is not clear flow information for the function please input a place holder of -[false]
 # If the input flow is external of the product, input -[[#,external,#,#]]
 # If the output flow is external of the product, input -[[#,#,external,#]]
 ## If you know there is a flow into/out of a component but do not know the orgin/destination within the system input
@@ -136,7 +140,7 @@ Function_Data:
 
 Flow_Data: 
     - [false,false,false]
-    - [[34,internal,0,40]]
+    - [[34,internal,3,40]]
     - [[[40,2,external,43],[7,external,internal,7]],[40,2,external,41]]
     - [false,false,false]
 
