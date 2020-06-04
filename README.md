@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
-Version 0.0.5
+Version 0.0.9
 
 
 PyDamp is a python packages used to streamline the product addition process of the Oregon State University Design Repository. This package allows useres to fill out a simple YAML text file that automatically is added to the PSQL-based OSU design repository.  PyDamp has intergrated checking funtionalilty to ensure that new products meet the data shema standards set forth though literature. 
@@ -17,7 +17,7 @@ The future of PyDamp will be focused on improving the functionality of the packa
 Pip:
 
 ```sh
-pip install -i https://test.pypi.org/simple/ PyDamp==0.0.5
+pip install pydamp
 ```
 
 Clone:
@@ -27,7 +27,7 @@ Clone the package onto your local machine. PyDamp is runnable through local dire
 ```
 
 ## Usage
-To use Pydamp, the user needs to fill out the provided Product.yaml and server.yaml files.  
+To use Pydamp, the user needs to fill out the provided Product.yaml and server.yaml files. (download from github)
 
 Pip:
 ```sh
@@ -41,6 +41,7 @@ python PyDamp_Run.py [product.yaml] [server.yaml]
 
 ## Example
 There is an embedded example to test PyDamp on your machine. The example adds a simple vacuum product to your local OSU design repository.
+Important: You need the 'Example_Product_input.yaml' and 'PyDamp_Server.yaml' files in the directory that you run the command line execution. (download these files from github)
 To run the example - 
 Pip:
 ```sh
