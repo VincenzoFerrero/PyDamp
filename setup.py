@@ -11,13 +11,13 @@ import setuptools
 
 setuptools.setup(
     name="PyDamp", # Replace with your own username
-    version="0.0.6",
+    version="0.0.11",
     author="Vincenzo Ferrero",
     author_email="ferrerov@oregonstate.edu",
     description="Python-based data addition and managment of PSQL",
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
-    install_requires=['pytest','pyyaml','psycopg2'],
+    install_requires=['pytest','pyyaml','psycopg2==2.7.7'],
     url="https://github.com/VincenzoFerrero/PyDamp",
     packages=setuptools.find_packages(),
     classifiers=[
@@ -26,4 +26,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
+    data_files=[('PyDamp', ['PyDamp_Server.yaml']),
+                  ('PyDamp', ['Example_Product_input.yaml'])],
 )

@@ -1,0 +1,149 @@
+---
+
+#Welcome to the PyDamp YAML Input Document
+
+## PLEASE DO NOT MODIFY THE KEYS, AND FORMAT
+## FOLLOW THE ENTRY FORMAT SHOWN IN THE EXAMPLE
+## DOUBLE CHECK YOUR INPUTS, WE STRIVE TO MAINTAIN ACCURACY IN THE OSU DESIGN REPOSITORY
+## SOME INFORMATION CAN BE SUBJECTIVE, PLEASE USE YOU BEST REASONING
+## THANK YOU FOR YOUR CONTRIBUTION
+
+## ONE YAML FILE PER PRODUCT
+
+## When using the provided indices, enter the index number that corresponds with the entry value.
+# EXAMPLEl:    1 | Consumer , System_Type: 1
+
+
+
+## USER INFORMATION
+# Please provide your name. (First Last)
+User_Name: Vinny Ferrero
+
+# Are you an OSU Student? (Only yes or no will be accepted)
+OSU_Student: yes
+
+#If you are an OSU student, Who is your Advisor?
+#If you are not an OSU student, What entity do you represent?
+Employer: Bryony
+
+
+# optional: Please enter you email
+Email: ferrerov@oregonstate.edu
+
+
+## SYSTEM INFORMATION
+# The following section gathers the overall data for the Product
+
+# What is the system name?
+System_Name: Vacuum
+
+#Please write a consise description of the product.
+System_Description: Home appliance used for cleaning floors 
+
+#Reference the included index table CSV to determine the System Type.
+System_Type: 1
+
+
+
+## BILL OF MATERIAL INFORMATION
+#This section gathers the componennt information for the product. 
+
+#To add more components enter a new line and follow the format
+
+##PLEASE THE FOLLOWING THE FORMAT##
+#   - [Name,Description,Component Basis,Material]
+
+BOM:
+    - [Housing,protective cover of product,50,15]
+    - [Motor,converts elec. energy to pnuematic energy,115,11]
+    - [Brush,sweeps up debris,46,15]
+    - [Brush Housing, covers the brush spindle,50,15]
+    
+    
+## SYSTEM ASSEMBLY INFORMATION
+#This section gathers information of the child-parent relationship of the components
+
+# A child is a component connected to another component from a top down perspective
+# EXAMPLE: A housing could be a child if the system(product), a motor could be a child of a housing.
+
+## If unsure default to naming the system (product) the parent. THE SYSTEM HAS AN INDEX OF  0
+
+# For this section you need as many enteries as your BOM. 
+# Use the index of the first component in the BOM being 1, second componet being 2 ... and so on.
+## REMINDER SYSTEM INDEX IS 0 AND SHOULD BE THE DEFAULT IF RELATIONSHIP IS UNKNOWN
+
+# In the following list please indext the PARENT of each component 
+# EXAMPLE: -[Housing,protective cover of product,50,15] would have a parent of system
+# the Assembly_Data for entry woulf be -0
+
+Assembly_Data:
+    - [0]
+    - [1]
+    - [4]
+    - [0]
+    
+    
+## SYSTEM FUNCTION INFORMATON
+# Use the function index to denote the functional basis terms of each component.
+# Use the index of the first component in the BOM being 1, second componet being 2 ... and so on.  
+# In short, the first entry will be the function of the first component.
+# Function is defined as the task the component completes 
+
+## COMPONENTS CAN HAVE MULTIPLE FUNCTIONS 
+# denote this as -[#,#,#] .....etc.
+
+Function_Data:
+    - [50,52,53]
+    - [35]
+    - [40,15]
+    - [50,52,53]
+    
+    
+## SYSTEM FLOW INFORMATION
+# This sections is used to collect advanced assembly information
+# For each of the functions listed in the Function_Data you need to denote:
+# the input flow, input component, the the output component, adn output flow
+
+# - [[input_flow,input_component,output_component,outout_flow]]
+
+## NOTE:: The input component is likely the parent component but not always
+## NOTE:: The output component is likely the child component but not always
+## BE CRITICAL ## 
+
+# Use the flow index to denote the flows in and out of the function.
+
+## Use nested lists to denote each set of flow data.
+# EXAMPLE: If Function data entry one is -[#,#] then flow data entry one is:
+# -[[input_flow,input_component,output_component,outout_flow],[input_flow,input_component,output_component,outout_flow]]
+
+# If a function has mulitple flows denote that with a nested list
+# EXAMPLE: If Function data entry one is -[#] but has mulitple flows then flow data entry one is:
+# -[[input_flow,input_component,output_component,outout_flow],[input_flow,input_component,output_component,outout_flow]]
+# -[[info1],[info2]]
+
+
+# a combonation of the above examples where one of the function entry looks like this:
+# - [#,#] but the second functions has multiple flows, use a  triple nest list
+# info = input_flow,input_component,output_component,outout_flow
+# Example: - [[info1],[[info2-1],[info2-2]]]
+#         
+
+
+## Not all components have flows. 
+# As such if there is not clear flow information for the function please input a place holder of -[false]
+# If the input flow is external of the product, input -[[#,external,#,#]]
+# If the output flow is external of the product, input -[[#,#,external,#]]
+## If you know there is a flow into/out of a component but do not know the orgin/destination within the system input
+# unknown component input, -[[#,internal,#,#]]
+# unknown component output, -[[#,#,internal,#]]
+
+
+Flow_Data: 
+    - [false,false,false]
+    - [[34,internal,3,40]]
+    - [[[40,2,external,43],[7,external,internal,7]],[40,2,external,41]]
+    - [false,false,false]
+
+    
+    
+    

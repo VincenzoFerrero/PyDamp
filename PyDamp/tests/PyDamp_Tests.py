@@ -14,7 +14,7 @@ The following script is used to test the checking module of the PyDamp suite.
 
 import pytest
 
-import PyDampCheck
+import PyDamp.PyDampCheck as PyDampCheck
 
 import yaml
 
@@ -250,36 +250,46 @@ def test_check_BOM13():
     
     
     
- ## Testing function data inputs 
+ ## Testing assemly data inputs 
 
-func_fail_1 = dict(input_dict)
-func_fail_2 = dict(input_dict)
-func_fail_3 = dict(input_dict)
+assembly_fail_1 = dict(input_dict)
+assembly_fail_2 = dict(input_dict)
+assembly_fail_3 = dict(input_dict)
+assembly_fail_4 = dict(input_dict)
 
-func_fail_1['Function_Data'] = None
-func_fail_2['Function_Data'] = [['string',52,53],[35],[40,15],[50,52,53]]
-func_fail_3['Function_Data'] = [[50,60,53],[35],[40,15],[50,52,53]]
+assembly_fail_1['Assembly_Data'] = None
+assembly_fail_2['Assembly_Data'] = [[0,2], [1], [4], [0]]
+assembly_fail_3['Assembly_Data'] = [['hello'], [1], [4], [0]]
+assembly_fail_4['Assembly_Data'] = [[10], [1], [4], [0]]
     
     
 def test_check_assembly_data1():
-    """ parent empty"""
+    """ Assembly empty"""
     with pytest.raises(AssertionError) as err_info:
-        PyDampCheck.check_function_data(func_fail_1)
-    assert str(err_info.value) == 'Input file requires Function data input(s)'  
+        PyDampCheck.check_assembly_data(assembly_fail_1)
+    assert str(err_info.value) == 'Input file requires Assembly data input(s)'  
 
        
 def test_check_assembly_data2():
-    """ parent string input"""
+    """ improper assembly input """
     with pytest.raises(AssertionError) as err_info:
-        PyDampCheck.check_function_data(func_fail_2)
-    assert str(err_info.value) == 'Function data for component 1 entry is improperly formated.'
+        PyDampCheck.check_assembly_data(assembly_fail_2)
+    assert str(err_info.value) == 'assembly data for component 1 entry is improperly formated.'
     
 def test_check_assembly_data3():
-    """ parent input out of bounds """
+    """ assembly input not a interger """
     with pytest.raises(AssertionError) as err_info:
-        PyDampCheck.check_function_data(func_fail_3)
-    assert str(err_info.value) == 'component 1 assembly data input in not in range of the Function inputs'    
-
+        PyDampCheck.check_assembly_data(assembly_fail_3)
+    assert str(err_info.value) == 'assembly data for component 1 requires integer assembly data input' 
+    
+def test_check_assembly_data4():
+    """ assembly input out of bounds """
+    with pytest.raises(AssertionError) as err_info:
+        PyDampCheck.check_assembly_data(assembly_fail_4)
+    assert str(err_info.value) == 'assembly data for component 1 assembly data input in not in range of the BOM inputs' 
+    
+    
+    
     
     
  ## Testing Flow data inputs 
@@ -313,30 +323,28 @@ flow_fail_25 = dict(input_dict)
 flow_fail_1['Flow_Data'] = None
 flow_fail_2['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,2,'external',41]]]
 flow_fail_3['Flow_Data'] = [[False,False],[[34,'internal',0,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
-
-
-flow_fail_4['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[True],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
-flow_fail_5['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40.1,2,'external',43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
-flow_fail_6['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[100,2,'external',43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
-flow_fail_7['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,'wrong','external',43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
-flow_fail_8['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,True,'external',43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
-flow_fail_9['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,100,'external',43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
-flow_fail_10['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'wrong',43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
-flow_fail_11['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,10.3,43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
-flow_fail_12['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,100,43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
-flow_fail_13['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'external','wrong'],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
-flow_fail_14['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'external',100],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
-flow_fail_15['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'external',43],[7,'external','internal',7]],[True]],[False,False,False]]
-flow_fail_16['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40.1,2,'external',41]],[False,False,False]]
-flow_fail_17['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'external',43],[7,'external','internal',7]],[100,2,'external',41]],[False,False,False]]
-flow_fail_18['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,'wrong','external',41]],[False,False,False]]
-flow_fail_19['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,True,'external',41]],[False,False,False]]
-flow_fail_20['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,100,'external',41]],[False,False,False]]
-flow_fail_21['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,2,'wrong',41]],[False,False,False]]
-flow_fail_22['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,2,10.3,41]],[False,False,False]]
-flow_fail_23['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,2,100,41]],[False,False,False]]
-flow_fail_24['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,2,'external','wrong']],[False,False,False]]
-flow_fail_25['Flow_Data'] = [[False,False,False],[[34,'internal',0,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,2,'external',100]],[False,False,False]]
+flow_fail_4['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[True],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
+flow_fail_5['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40.1,2,'external',43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
+flow_fail_6['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[100,2,'external',43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
+flow_fail_7['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,'wrong','external',43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
+flow_fail_8['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,True,'external',43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
+flow_fail_9['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,100,'external',43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
+flow_fail_10['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,'wrong',43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
+flow_fail_11['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,10.3,43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
+flow_fail_12['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,100,43],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
+flow_fail_13['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,'external','wrong'],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
+flow_fail_14['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,'external',100],[7,'external','internal',7]],[40,2,'external',41]],[False,False,False]]
+flow_fail_15['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,'external',43],[7,'external','internal',7]],[True]],[False,False,False]]
+flow_fail_16['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40.1,2,'external',41]],[False,False,False]]
+flow_fail_17['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,'external',43],[7,'external','internal',7]],[100,2,'external',41]],[False,False,False]]
+flow_fail_18['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,'wrong','external',41]],[False,False,False]]
+flow_fail_19['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,True,'external',41]],[False,False,False]]
+flow_fail_20['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,100,'external',41]],[False,False,False]]
+flow_fail_21['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,2,'wrong',41]],[False,False,False]]
+flow_fail_22['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,2,10.3,41]],[False,False,False]]
+flow_fail_23['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,2,100,41]],[False,False,False]]
+flow_fail_24['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,2,'external','wrong']],[False,False,False]]
+flow_fail_25['Flow_Data'] = [[False,False,False],[[34,'internal',3,40]],[[[40,2,'external',43],[7,'external','internal',7]],[40,2,'external',100]],[False,False,False]]
 
 
 def test_check_flow_data1():
@@ -494,6 +502,8 @@ def test_check_flow_data25():
     with pytest.raises(AssertionError) as err_info:
         PyDampCheck.check_flow_data(flow_fail_25)
     assert str(err_info.value) == 'component 3 function 2 input in not in range of the flow index'  
+    
+
     
     
     
