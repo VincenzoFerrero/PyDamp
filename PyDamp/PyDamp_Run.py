@@ -98,7 +98,7 @@ function = osu_design_repo.Function_SQL_injection(product_dict,connection,BOM)
 flow = osu_design_repo.Flow_SQL_injection(product_dict,connection,BOM,function)
 
 
-#connection.commit()
+connection.commit()
 connection.close()
 print("PostgreSQL connection is closed")
 print('')
