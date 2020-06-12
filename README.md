@@ -4,7 +4,11 @@
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
+<<<<<<< HEAD
 Version 0.0.14
+=======
+Version 0.0.12
+>>>>>>> b680e520e0837dd46336b81e457f6700f75de0a7
 
 
 PyDamp is a python packages used to streamline the product addition process of the Oregon State University Design Repository. This package allows useres to fill out a simple YAML text file that automatically is added to the PSQL-based OSU design repository.  PyDamp has intergrated checking funtionalilty to ensure that new products meet the data shema standards set forth though literature. 
