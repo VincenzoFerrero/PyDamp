@@ -11,7 +11,7 @@ import setuptools
 
 setuptools.setup(
     name="PyDamp", # Replace with your own username
-    version="0.0.12",
+    version="0.0.14",
     author="Vincenzo Ferrero",
     author_email="ferrerov@oregonstate.edu",
     description="Python-based data addition and managment of PSQL",

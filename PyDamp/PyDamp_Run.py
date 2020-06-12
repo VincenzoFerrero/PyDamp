@@ -90,7 +90,6 @@ Check.check_product_YAML(product_dict)
 
 
 
-
 system = osu_design_repo.System_SQL_injection(product_dict,connection)
 user = osu_design_repo.User_SQL_injection(product_dict,connection)
 BOM = osu_design_repo.BOM_SQL_injection(product_dict,connection,system[0],user[0])

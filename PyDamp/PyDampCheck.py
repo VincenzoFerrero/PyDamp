@@ -411,16 +411,16 @@ def check_flow_data(product_dict):
                 
 def check_product_YAML(input_dict):
     
-    check_user_name(product_dict)
-    check_osu_student(product_dict)
-    check_employer(product_dict)
-    check_system_name(product_dict)
-    check_system_description(product_dict)
-    check_system_type(product_dict)
-    check_BOM(product_dict)
-    check_assembly_data(product_dict)
-    check_function_data(product_dict)
-    check_flow_data(product_dict)               
+    check_user_name(input_dict)
+    check_osu_student(input_dict)
+    check_employer(input_dict)
+    check_system_name(input_dict)
+    check_system_description(input_dict)
+    check_system_type(input_dict)
+    check_BOM(input_dict)
+    check_assembly_data(input_dict)
+    check_function_data(input_dict)
+    check_flow_data(input_dict)               
             
 
 #
