@@ -36,20 +36,8 @@ try:
     
     if len(sys.argv) >= 4:
         sys.exit('Error: Too many input arguments.')
-        
-    else:
+
             
-            
-        """ The YAML import of product information """
-         ## Add functionality to run this YAML from the command prompt ##
-        stream = open(str(product_YAML), 'r')
-        product_dict = yaml.load(stream, Loader=yaml.UnsafeLoader)
-            
-            
-        """ The YAML import of server information """
-            ## Add functionality to run this YAML from the command prompt ##
-        stream = open(str(connection_YAML), 'r')
-        server_info = yaml.load(stream, Loader=yaml.UnsafeLoader)
     
 except Exception:
         
@@ -70,6 +58,25 @@ except Exception:
         server_info = yaml.load(stream, Loader=yaml.UnsafeLoader)
 
 
+try:
+        
+        
+    """ The YAML import of product information """
+    ## Add functionality to run this YAML from the command prompt ##
+    stream = open(str(product_YAML), 'r')
+    product_dict = yaml.load(stream, Loader=yaml.UnsafeLoader)
+                        
+                        
+    """ The YAML import of server information """
+    ## Add functionality to run this YAML from the command prompt ##
+    stream = open(str(connection_YAML), 'r')
+    server_info = yaml.load(stream, Loader=yaml.UnsafeLoader)
+            
+except:
+    product_dict = yaml.load(stream, Loader=yaml.UnsafeLoader)
+    server_info = yaml.load(stream, Loader=yaml.UnsafeLoader)
+    raise ValueError("See ParseError Above")
+    
 try:
     connection = osu_design_repo.PSQL_connect(server_info.get('user'),
                                               server_info.get('password'),
