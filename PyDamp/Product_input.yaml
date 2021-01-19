@@ -96,5 +96,10 @@ Function_Data:
 Flow_Data: 
     - 
     
-    
-    
+
+# If providing LCA information, choose an LCA type
+LCA_Type:
+
+# Input a list of metrics for the given LCA type 
+LCA_Data:
+    -

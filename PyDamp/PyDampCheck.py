@@ -407,7 +407,30 @@ def check_flow_data(product_dict):
                     assert 0 <= Flow_of_component[3] <= 45, 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the flow index'                
                 
 
-                    
+def check_lca_data(product_dict):
+    """
+    Checks for errors in the LCA input.
+
+    Parameters - YAML for product information .dict
+    ----------
+
+    Returns - None
+    -------
+    """   
+    LCA_Type = product_dict.get('LCA_Type')
+
+    # LCA data is not required, so we can short circuit if not provided.
+    if not LCA_Type:
+        return
+
+    LCA_Data = product_dict.get('LCA_Data')
+
+    assert LCA_Data is not None, 'Must provide data for LCA Type "%s".' % LCA_Type
+    assert len(LCA_Data) == 1, 'LCA Data should consist of a single list.'
+
+    for n in LCA_Data[0]:
+        assert type(n) in [float, int], 'LCA Metrics must be numbers.'
+
                 
 def check_product_YAML(input_dict):
     
@@ -421,6 +444,7 @@ def check_product_YAML(input_dict):
     check_assembly_data(input_dict)
     check_function_data(input_dict)
     check_flow_data(input_dict)               
+    check_lca_data(input_dict)
             
 
 #

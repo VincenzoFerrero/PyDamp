@@ -504,17 +504,34 @@ def test_check_flow_data25():
     assert str(err_info.value) == 'component 3 function 2 input in not in range of the flow index'  
     
 
+ ## Testing LCA data inputs
+
+lca_fail_1 = dict(input_dict)
+lca_fail_1['LCA_Data'] = None
+
+lca_2 = dict(input_dict)
+lca_2['LCA_Type'] = None
+lca_2['LCA_Data'] = None
+
+lca_fail_3 = dict(input_dict)
+lca_fail_3['LCA_Data'] = [["bad"]]
+
+
+def test_check_LCA_data1():
+    """`LCA_Type` exists but `LCA_Data` is `None`"""
+    with pytest.raises(AssertionError) as err_info:
+        PyDampCheck.check_lca_data(lca_fail_1)
+    assert str(err_info.value) == 'Must provide data for LCA Type "one".'
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+def test_check_LCA_data2():
+    """Should allow users to opt out of inputting LCA Data."""
+    try:
+        PyDampCheck.check_lca_data(lca_2)
+    except:
+        pytest.fail('Users should be allowed to skip LCA Data.')
+
+def test_check_LCA_data3():
+    """`LCA_Data` includes non-numbers."""
+    with pytest.raises(AssertionError) as err_info:
+        PyDampCheck.check_lca_data(lca_fail_3)
+    assert str(err_info.value) == 'LCA Metrics must be numbers.'
