@@ -510,18 +510,22 @@ lca_fail_1 = dict(input_dict)
 lca_fail_1['LCA_Data'] = None
 
 lca_2 = dict(input_dict)
-lca_2['LCA_Type'] = None
+lca_2['LCA_Types'] = None
 lca_2['LCA_Data'] = None
 
 lca_fail_3 = dict(input_dict)
 lca_fail_3['LCA_Data'] = [["bad"]]
 
+lca_fail_4 = dict(input_dict)
+lca_fail_4['LCA_Data'] = [[1.2], [3.4]]
+
 
 def test_check_LCA_data1():
-    """`LCA_Type` exists but `LCA_Data` is `None`"""
+    """`LCA_Types` exists but `LCA_Data` is `None`"""
     with pytest.raises(AssertionError) as err_info:
         PyDampCheck.check_lca_data(lca_fail_1)
-    assert str(err_info.value) == 'Must provide data for LCA Type "one".'
+    msg = 'Must provide data for LCA Types "[\'Recipe\']".'
+    assert str(err_info.value) == msg
     
 def test_check_LCA_data2():
     """Should allow users to opt out of inputting LCA Data."""
@@ -535,3 +539,12 @@ def test_check_LCA_data3():
     with pytest.raises(AssertionError) as err_info:
         PyDampCheck.check_lca_data(lca_fail_3)
     assert str(err_info.value) == 'LCA Metrics must be numbers.'
+
+def test_check_LCA_data4():
+    """
+    The number of `LCA_Data` entries do not match the number of types provided.
+    """
+    with pytest.raises(AssertionError) as err_info:
+        PyDampCheck.check_lca_data(lca_fail_4)
+    msg = 'The number of LCA Data entries should match the number of specified types.'
+    assert str(err_info.value) == msg

@@ -97,9 +97,18 @@ Flow_Data:
     - 
     
 
-# If providing LCA information, choose an LCA type
-LCA_Type:
+# If providing LCA information, choose LCA types
+# Example:
+# LCA_Types:
+#    - Recipe
+#    - other
+LCA_Types:
+    -
 
-# Input a list of metrics for the given LCA type 
+# Input lists of metrics for the given LCA types 
+# Example (2 LCA Types):
+# LCA_Data:
+#    - [1.5, 2.5, 6.0]
+#    - [4.2, 3.8, 11.4]
 LCA_Data:
     -
