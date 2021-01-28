@@ -102,6 +102,7 @@ user = osu_design_repo.User_SQL_injection(product_dict,connection)
 BOM = osu_design_repo.BOM_SQL_injection(product_dict,connection,system[0],user[0])
 function = osu_design_repo.Function_SQL_injection(product_dict,connection,BOM)
 flow = osu_design_repo.Flow_SQL_injection(product_dict,connection,BOM,function)
+lca = osu_design_repo.LCA_SQL_injection(product_dict,connection, system[0])
 
 
 connection.commit()

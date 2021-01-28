@@ -144,6 +144,22 @@ Flow_Data:
     - [[[40,2,external,43],[7,external,internal,7]],[40,2,external,41]]
     - [false,false,false]
 
-    
-    
+
+# If providing LCA information, choose LCA types
+# Example:
+# LCA_Types:
+#    - Recipe
+#    - other
+LCA_Types:
+    - recipe
+
+
+# Input lists of metrics for the given LCA types
+# Example (2 LCA Types):
+# LCA_Data:
+#    - [1.5, 2.5, 6.0]
+#    - [4.2, 3.8, 11.4]
+LCA_Data:
+    - [12.4, 13.5]
+
     

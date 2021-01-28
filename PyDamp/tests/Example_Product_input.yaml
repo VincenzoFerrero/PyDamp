@@ -153,6 +153,7 @@ Flow_Data:
 LCA_Types:
     - Recipe
 
+
 # Input lists of metrics for the given LCA types
 # Example (2 LCA Types):
 # LCA_Data:

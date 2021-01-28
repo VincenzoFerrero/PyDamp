@@ -482,3 +482,42 @@ def Flow_SQL_injection(product_dict,SQL_connection,BOM,function_data):
 
     return flow_data
 
+
+def LCA_SQL_injection(product_dict, SQL_connection, system):
+    # Fetch LCA types to match
+    cursor = SQL_connection.cursor()
+    cursor.execute("select * from lca_type")
+    db_lca_types = cursor.fetchall()
+
+    LCA_types = product_dict['LCA_Types']
+    LCA_data = product_dict['LCA_Data']
+
+    for i, lca_type in enumerate(LCA_types):
+        lca_match = None
+
+        for lca in db_lca_types:
+            if lca_type == lca[0]:
+                lca_match = lca
+
+        if lca_match:
+            type_name, fields, type_id = lca_match
+
+            field_names = ','.join(fields)
+            lca_metrics = ','.join(map(str, LCA_data[i]))
+
+            lca_data = (
+                field_names, system, type_id, lca_metrics
+            )
+                
+            sql = """ INSERT INTO lca_data
+                      (SYSTEM,LCA_TYPE,%s)
+                      VALUES (%s,%s,%s)
+                  """ % lca_data
+
+            cursor.execute(sql)
+
+            return lca_data
+
+        else:
+            # TODO: Handle new LCA scenario
+            pass

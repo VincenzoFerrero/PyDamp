@@ -1,3 +1,4 @@
 pytest
 psycopg2-binary
 pyyaml
+ipdb
