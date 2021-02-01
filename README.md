@@ -15,7 +15,7 @@ PyDamp is a python packages used to streamline the product addition process of t
 
 The future of PyDamp will be focused on improving the functionality of the package including pulling, editing, and modifying exsisting data in the repository; along with pulling data directly to be used in python-based machine learning packages.  Beyond that, PyDamp will be expanded to serve gernalized needs of PSQL management within python. This goal ensures that PyDamp will be useful beyond managment of the OSU Design repository. 
 
-
+#
 ## Installation
 
 Pip:
