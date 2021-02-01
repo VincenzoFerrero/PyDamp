@@ -1,5 +1,5 @@
 # PyDamp
-> Python-based data addition and managment of PSQL repostories
+> Python-based data addition and managment of PSQL repositories
 
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
