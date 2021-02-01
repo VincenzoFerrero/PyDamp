@@ -4,7 +4,6 @@
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3891884.svg)](https://doi.org/10.5281/zenodo.3891884)
 
 
 Version 0.0.14
