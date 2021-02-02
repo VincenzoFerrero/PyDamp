@@ -489,35 +489,36 @@ def LCA_SQL_injection(product_dict, SQL_connection, system):
     cursor.execute("select * from lca_type")
     db_lca_types = cursor.fetchall()
 
-    LCA_types = product_dict['LCA_Types']
-    LCA_data = product_dict['LCA_Data']
+    LCA_Data = product_dict['LCA_Data']
 
-    for i, lca_type in enumerate(LCA_types):
-        lca_match = None
+    for lca_entry in LCA_Data:
+        for lca_type, metrics in lca_entry.items():
+            lca_match = None
 
-        for lca in db_lca_types:
-            if lca_type == lca[0]:
-                lca_match = lca
+            for lca in db_lca_types:
+                if lca_type == lca[0]:
+                    lca_match = lca
 
-        if lca_match:
-            type_name, fields, type_id = lca_match
+            if lca_match:
+                _, _, type_id = lca_match
+                fields = metrics.keys()
+                values = map(str, metrics.values())
+                field_names = ','.join(fields)
+                lca_metrics = ','.join(values)
 
-            field_names = ','.join(fields)
-            lca_metrics = ','.join(map(str, LCA_data[i]))
+                lca_data = (
+                    field_names, system, type_id, lca_metrics
+                )
+                    
+                sql = """ INSERT INTO lca_data
+                        (SYSTEM,LCA_TYPE,%s)
+                        VALUES (%s,%s,%s)
+                    """ % lca_data
 
-            lca_data = (
-                field_names, system, type_id, lca_metrics
-            )
-                
-            sql = """ INSERT INTO lca_data
-                      (SYSTEM,LCA_TYPE,%s)
-                      VALUES (%s,%s,%s)
-                  """ % lca_data
+                cursor.execute(sql)
 
-            cursor.execute(sql)
+                return lca_data
 
-            return lca_data
-
-        else:
-            # TODO: Handle new LCA scenario
-            pass
+            else:
+                # TODO: Handle new LCA scenario
+                pass

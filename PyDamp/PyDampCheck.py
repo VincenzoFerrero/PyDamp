@@ -417,21 +417,19 @@ def check_lca_data(product_dict):
     Returns - None
     -------
     """   
-    LCA_Types = product_dict.get('LCA_Types')
-
-    # LCA data is not required, so we can short circuit if not provided.
-    if not LCA_Types:
-        return
-
     LCA_Data = product_dict.get('LCA_Data')
 
-    assert LCA_Data is not None, 'Must provide data for LCA Types "%s".' % LCA_Types
-    msg = 'The number of LCA Data entries should match the number of specified types.'
-    assert len(LCA_Data) == len(LCA_Types), msg
+    # LCA data is not required, so we can short circuit if not provided.
+    if not LCA_Data:
+        return
 
-    for lca_type in LCA_Types:
-        for metric in LCA_Data[0]:
-            assert type(metric) in [float, int], 'LCA Metrics must be numbers.'
+    msg = 'The number of LCA Data entries for "%s" must be greater than zero'
+
+    for lca_entry in LCA_Data:
+        for name, metrics in lca_entry.items():
+            assert len(metrics) > 0, msg % name
+            for _, metric in metrics.items():
+                assert type(metric) in [float, int], 'LCA Metrics must be numbers.'
 
                 
 def check_product_YAML(input_dict):

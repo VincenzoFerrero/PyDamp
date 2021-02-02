@@ -147,19 +147,11 @@ Flow_Data:
 
 # If providing LCA information, choose LCA types
 # Example:
-# LCA_Types:
-#    - Recipe
-#    - other
-LCA_Types:
-    - recipe
-
-
-# Input lists of metrics for the given LCA types
-# Example (2 LCA Types):
 # LCA_Data:
-#    - [1.5, 2.5, 6.0]
-#    - [4.2, 3.8, 11.4]
+#     - Recipe:
+#         co2_kg: 12.4
+#         so2_kg: 13.5
 LCA_Data:
-    - [12.4, 13.5]
-
-    
+    - Recipe:
+        co2_kg: 12.4
+        so2_kg: 13.5
