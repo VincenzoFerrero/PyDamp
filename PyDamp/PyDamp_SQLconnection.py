@@ -491,9 +491,15 @@ def LCA_SQL_injection(product_dict, SQL_connection, system):
 
     LCA_Data = product_dict['LCA_Data']
 
+    results = []
+
     for lca_entry in LCA_Data:
         for lca_type, metrics in lca_entry.items():
             lca_match = None
+            fields = metrics.keys()
+            values = map(str, metrics.values())
+            field_names = ','.join(fields)
+            lca_metrics = ','.join(values)
 
             for lca in db_lca_types:
                 if lca_type == lca[0]:
@@ -501,24 +507,54 @@ def LCA_SQL_injection(product_dict, SQL_connection, system):
 
             if lca_match:
                 _, _, type_id = lca_match
-                fields = metrics.keys()
-                values = map(str, metrics.values())
-                field_names = ','.join(fields)
-                lca_metrics = ','.join(values)
 
                 lca_data = (
                     field_names, system, type_id, lca_metrics
                 )
                     
                 sql = """ INSERT INTO lca_data
-                        (SYSTEM,LCA_TYPE,%s)
-                        VALUES (%s,%s,%s)
+                          (SYSTEM,LCA_TYPE,%s)
+                          VALUES (%s,%s,%s)
                     """ % lca_data
 
                 cursor.execute(sql)
 
-                return lca_data
+                results.append(lca_data)
 
             else:
-                # TODO: Handle new LCA scenario
-                pass
+                # NOTE: we may want to enhance the matching logic in case of
+                # minor spelling/capitalization mistakes for LCA types and metric names.
+                sql = 'ALTER TABLE lca_data '
+                            
+                # Add new columns to `lca_data`
+                columns = []
+                for field in fields:
+                    columns.append('ADD COLUMN IF NOT EXISTS %s NUMERIC' % field)
+                
+                sql += ', '.join(columns)
+
+                cursor.execute(sql)
+
+                # Add new row to `lca_type`
+                sql = """ INSERT INTO lca_type
+                          (TYPE,FIELDS) 
+                          VALUES ('%s', '{%s}')
+                          RETURNING id
+                      """ % (lca_type, field_names)
+
+                cursor.execute(sql)
+                (type_id,) = cursor.fetchone()
+                
+                lca_data = (
+                    field_names, system, type_id, lca_metrics
+                )
+
+            sql = """ INSERT INTO lca_data
+                    (SYSTEM,LCA_TYPE,%s)
+                    VALUES (%s,%s,%s)
+                """ % lca_data
+
+            cursor.execute(sql)
+
+
+    return results

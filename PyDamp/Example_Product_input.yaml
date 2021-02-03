@@ -152,6 +152,9 @@ Flow_Data:
 #         co2_kg: 12.4
 #         so2_kg: 13.5
 LCA_Data:
-    - Recipe:
+    - recipe:
         co2_kg: 12.4
         so2_kg: 13.5
+    - New:
+        stuff: 1.1
+        data: 4.5
