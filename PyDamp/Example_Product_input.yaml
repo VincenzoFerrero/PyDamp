@@ -144,6 +144,7 @@ Flow_Data:
     - [[[40,2,external,43],[7,external,internal,7]],[40,2,external,41]]
     - [false,false,false]
 
+LCA: true
 
 # If providing LCA information, choose LCA types
 # Example:
@@ -151,10 +152,11 @@ Flow_Data:
 #     - Recipe:
 #         co2_kg: 12.4
 #         so2_kg: 13.5
-LCA_Data:
-    - recipe:
-        co2_kg: 12.4
-        so2_kg: 13.5
-    - New:
-        stuff: 1.1
-        data: 4.5
+# LCA_Data:
+#     - recipe:
+#         co2_kg: 12.4
+#         so2_kg: 13.5
+#     - New:
+#         stuff: 1.1
+#         data: 4.5
+LCA_Data: True

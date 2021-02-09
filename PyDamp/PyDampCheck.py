@@ -420,7 +420,7 @@ def check_lca_data(product_dict):
     LCA_Data = product_dict.get('LCA_Data')
 
     # LCA data is not required, so we can short circuit if not provided.
-    if not LCA_Data:
+    if not LCA_Data or LCA_Data == True:
         return
 
     msg = 'The number of LCA Data entries for "%s" must be greater than zero'
