@@ -4,13 +4,17 @@ to input information through a guided process.
 """
 
 import sys
+from prompt_toolkit.validation import Validator, ValidationError
+from PyInquirer import prompt
 
 
 class DB:
+    """Wrapper around a Postgres connection, used for dependency injection."""
     def __init__(self, connection):
         self._connection = connection
 
     def fetch_lca_types(self):
+        """Fetches all LCA Type data."""
         sql = "SELECT * from lca_type"
         cursor = self._connection.cursor()
         cursor.execute(sql)
@@ -31,6 +35,23 @@ class PyDampCLI:
         LCAPrompt(self._product_dict, self._db)
 
 
+class LCAMetricValidator(Validator):
+    """
+    Validates LCA Metrics. Currently, all metrics must either
+    be floats or null values.
+    """
+    def validate(self, document):
+        if document.text.strip() == "":
+            return True
+
+        try:
+            float(document.text)
+        except ValueError:
+            raise ValidationError(
+                message='LCA Metrics must be numbers (or empty)',
+                cursor_position=len(document.text))
+
+
 class LCAPrompt:
 
     def __init__(self, product_dict, db):
@@ -42,6 +63,49 @@ class LCAPrompt:
         self._db = db
 
         self.run()
+
+    
+    def ask_lca_type(self, lca_names):
+        """Prompts the User for an LCA type, or "Other"."""
+        lca_names.append('Other')
+        lca_prompt = {
+            'type': 'list',
+            'name': 'lca_type',
+            'message': 'Choose an LCA Type',
+            'choices': lca_names
+        }
+        answer = prompt(lca_prompt)
+        return answer['lca_type']
+
+    
+    def ask_lca_metric(self, field):
+        """Prompts the User to enter a value for a given LCA Metric."""
+        metric_prompt = {
+            'type': 'input',
+            'name': 'metric',
+            'message': 'Enter a value for field %s' % field,
+            'validate': LCAMetricValidator
+        }
+        answer = prompt(metric_prompt)
+        return answer['metric']
+
+
+    def ask_lca_metrics(self, lca_type):
+        """
+        Iterates through LCA metric fields, prompting the User to enter 
+        information for each.
+        """
+        (name, fields, _) = lca_type
+
+        results = {}
+        for field in fields:
+            metric = self.ask_lca_metric(field)
+            if metric.strip() == "":
+                results[field] = metric
+            else:
+                results[field] = float(metric)
+        
+        return results
 
     
     def validate_response(self, response):
@@ -58,6 +122,50 @@ class LCAPrompt:
             print("\nLCA Metrics must be numbers (or empty).")
             return False
 
+    
+    def ask_new_lca(self):
+        """
+        Prompts the User to confirm whether they want to create a new LCA type.
+        """
+        new_lca_prompt = {
+            'type': 'confirm',
+            'message': 'Create new LCA type?',
+            'name': 'new_lca',
+            'default': True
+        }
+        answer = prompt(new_lca_prompt)
+
+        return answer['new_lca']
+
+    
+    def ask_continue(self):
+        """
+        Prompts the User to confirm whether they want to add another entry.
+        """
+        continue_prompt = {
+            'type': 'confirm',
+            'message': 'Add another LCA entry?',
+            'name': 'continue',
+            'default': True
+        }
+        answer = prompt(continue_prompt)
+
+        return answer['continue']
+
+
+    def ask_commit(self, results):
+        """Prompts the User to confirm LCA Data entries."""
+        print('Results:\n%s' % results)
+        commit_prompt = {
+            'type': 'confirm',
+            'message': 'Would you like to commit this data?',
+            'name': 'commit',
+            'default': True
+        }
+        answer = prompt(commit_prompt)
+
+        return answer['commit']
+
 
     def run(self):
         """
@@ -66,36 +174,34 @@ class LCAPrompt:
         all LCA information in YAML form.
         """
         try:
-            if self._product_dict['LCA_Data'] != True:
-                return
+            results = []
+            is_running = True
 
-            print("Entering LCA Information. Press Ctrl+C to quit.\n")
-            lca_types = self._db.fetch_lca_types()
-            lca_names = [t[0] for t in lca_types]
-            print("Existing LCA Types: %s\n" % lca_names)
-            lca_type_entry = input("Please enter LCA type: ")
+            while is_running:
+                if self._product_dict['LCA_Data'] != True:
+                    return
 
-            lca_match = None
-            for lca_type in lca_types:
-                if lca_type[0] == lca_type_entry:
-                    lca_match = lca_type
+                print("Entering LCA Information. Press Ctrl+C to quit.\n")
+                lca_types = self._db.fetch_lca_types()
+                lca_names = [t[0] for t in lca_types]
+                lca_type_entry = self.ask_lca_type(lca_names)
 
-            if lca_match:
-                results = {}
-
-                for field in lca_match[1]:
-                    response = None
-
-                    while not response:
-                        val = input('Please enter a value for field "%s": ' % field)
-                        response = self.validate_response(val)
-
-                    (_, val) = response
-                    results[field] = val
+                if lca_type_entry != 'Other':
+                    lca_match = None
+                    for lca_type in lca_types:
+                        if lca_type[0] == lca_type_entry:
+                            lca_match = lca_type
+                    
+                    entry = self.ask_lca_metrics(lca_match)
+                    results.append({lca_match[0]: entry})
+                else:
+                    if self.ask_new_lca():
+                        pass
                 
-                print(results)
-            else:
-                print('LCA Type "%s" not found. Create New LCA Type?' % lca_type_entry)
+                is_running = self.ask_continue()
+
+            if self.ask_commit(results):
+                self._product_dict['LCA_Data'] = results
 
         except KeyboardInterrupt:
             print("\nExiting LCA Data Entry.")

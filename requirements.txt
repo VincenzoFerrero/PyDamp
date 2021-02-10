@@ -2,3 +2,5 @@ pytest
 psycopg2-binary
 pyyaml
 ipdb
+PyInquirer
+prompt_toolkit==1.0.14
