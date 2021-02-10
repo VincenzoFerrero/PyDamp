@@ -166,6 +166,19 @@ class LCAPrompt:
 
         return answer['commit']
 
+    
+    def ask_start_over(self):
+        """Prompts the User to start over or exit the program."""
+        start_over_prompt = {
+            'type': 'confirm',
+            'message': 'Would you like to start over?',
+            'name': 'start_over',
+            'default': True
+        }
+        answer = prompt(start_over_prompt)
+
+        return answer['start_over']
+    
 
     def run(self):
         """
@@ -173,35 +186,39 @@ class LCAPrompt:
         entered is `True`. Otherwise it will assume the user has entered
         all LCA information in YAML form.
         """
-        try:
-            results = []
-            is_running = True
+        if self._product_dict['LCA_Data'] != True:
+            return
 
-            while is_running:
-                if self._product_dict['LCA_Data'] != True:
-                    return
+        results = []
+        is_running = True
 
-                print("Entering LCA Information. Press Ctrl+C to quit.\n")
-                lca_types = self._db.fetch_lca_types()
-                lca_names = [t[0] for t in lca_types]
-                lca_type_entry = self.ask_lca_type(lca_names)
+        while is_running:
+            print("Entering LCA Information. Press Ctrl+C to quit.\n")
+            lca_types = self._db.fetch_lca_types()
+            lca_names = [t[0] for t in lca_types]
+            lca_type_entry = self.ask_lca_type(lca_names)
 
-                if lca_type_entry != 'Other':
-                    lca_match = None
-                    for lca_type in lca_types:
-                        if lca_type[0] == lca_type_entry:
-                            lca_match = lca_type
-                    
-                    entry = self.ask_lca_metrics(lca_match)
-                    results.append({lca_match[0]: entry})
-                else:
-                    if self.ask_new_lca():
-                        pass
+            if lca_type_entry != 'Other':
+                lca_match = None
+                for lca_type in lca_types:
+                    if lca_type[0] == lca_type_entry:
+                        lca_match = lca_type
                 
-                is_running = self.ask_continue()
+                entry = self.ask_lca_metrics(lca_match)
+                # we may want to add a check here to ensure that at least
+                # one metric isn't empty
+                results.append({lca_match[0]: entry})
+            else:
+                if self.ask_new_lca():
+                    pass
+            
+            is_running = self.ask_continue()
 
-            if self.ask_commit(results):
-                self._product_dict['LCA_Data'] = results
-
-        except KeyboardInterrupt:
-            print("\nExiting LCA Data Entry.")
+        if self.ask_commit(results):
+            self._product_dict['LCA_Data'] = results
+        else:
+            if self.ask_start_over():
+                self.run()
+            else:
+                print("Exiting PyDamp.")
+                sys.exit()
