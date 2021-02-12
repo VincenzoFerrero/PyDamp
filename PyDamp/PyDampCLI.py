@@ -52,6 +52,15 @@ class LCAMetricValidator(Validator):
                 cursor_position=len(document.text))
 
 
+class LCAFieldValidator(Validator):
+    def validate(self, document):
+        if document.text.strip() == "":
+            raise ValidationError(
+                message='Cannot be empty',
+                cursor_position=len(document.text))
+        return True
+
+
 class LCAPrompt:
 
     def __init__(self, product_dict, db):
@@ -178,7 +187,46 @@ class LCAPrompt:
         answer = prompt(start_over_prompt)
 
         return answer['start_over']
-    
+
+
+    def ask_new_lca_type(self):
+        """Prompts the User to enter a new LCA Type."""
+        lca_type_prompt = {
+            'type': 'input',
+            'name': 'lca_type',
+            'message': 'Enter the new LCA Type name',
+            'validate': LCAFieldValidator
+        }
+        answer = prompt(lca_type_prompt)
+        return answer['lca_type']
+
+
+    def ask_new_field(self):
+        """Prompts the User to enter a new LCA metric."""
+        lca_field_prompt = {
+            'type': 'input',
+            'name': 'lca_field',
+            'message': 'Enter the new LCA metric name',
+            'validate': LCAFieldValidator
+        }
+        answer = prompt(lca_field_prompt)
+        return answer['lca_field']
+
+
+    def ask_continue_new_fields(self):
+        """
+        Prompts the User to confirm whether they want to add another field.
+        """
+        continue_prompt = {
+            'type': 'confirm',
+            'message': 'Add another field?',
+            'name': 'continue',
+            'default': True
+        }
+        answer = prompt(continue_prompt)
+
+        return answer['continue']
+
 
     def run(self):
         """
@@ -210,7 +258,21 @@ class LCAPrompt:
                 results.append({lca_match[0]: entry})
             else:
                 if self.ask_new_lca():
-                    pass
+                    new_lca_type = self.ask_new_lca_type()
+
+                    # TODO: handle duplicates
+
+                    is_adding_fields = True
+                    entry = {}
+
+                    while is_adding_fields:
+                        field = self.ask_new_field()
+                        value = self.ask_lca_metric(field)
+                        entry[field] = value
+
+                        is_adding_fields = self.ask_continue_new_fields()
+                    
+                    results.append({new_lca_type: entry})
             
             is_running = self.ask_continue()
 
