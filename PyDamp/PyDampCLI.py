@@ -9,7 +9,10 @@ from PyInquirer import prompt
 
 
 class DB:
-    """Wrapper around a Postgres connection, used for dependency injection."""
+    """
+    Wrapper around a Postgres connection, can be used for dependency injection
+    for testing purposes.
+    """
     def __init__(self, connection):
         self._connection = connection
 
@@ -23,9 +26,9 @@ class DB:
 
 
 class PyDampCLI:
+    """Runs the CLI given a DB connection."""
 
     def __init__(self, product_dict, db):
-        """Runs the CLI given a DB connection."""
         self._product_dict = product_dict
         self._db = db
 
@@ -53,6 +56,7 @@ class LCAMetricValidator(Validator):
 
 
 class LCAFieldValidator(Validator):
+    """Validates LCA metric names."""
     def validate(self, document):
         if document.text.strip() == "":
             raise ValidationError(
@@ -62,12 +66,11 @@ class LCAFieldValidator(Validator):
 
 
 class LCAPrompt:
-
+    """
+    LCA Data Entry Prompt, uses product data from YAML parsing
+    and a database wrapper instance (used for data retrieval ONLY).
+    """
     def __init__(self, product_dict, db):
-        """
-        Initializes the LCA Data Entry Prompt, using the product data from YAML parsing
-        and a database wrapper instance (used for data retrieval ONLY).
-        """
         self._product_dict = product_dict
         self._db = db
 
@@ -227,6 +230,39 @@ class LCAPrompt:
 
         return answer['continue']
 
+    
+    def input_lca_data(self, lca_names, lca_types):
+        """Handles input of data for new/existing LCA types."""
+        lca_type_entry = self.ask_lca_type(lca_names)
+
+        if lca_type_entry != 'Other':
+            lca_match = None
+            for lca_type in lca_types:
+                if lca_type[0] == lca_type_entry:
+                    lca_match = lca_type
+            
+            entry = self.ask_lca_metrics(lca_match)
+            # NOTE: we may want to add a check here to ensure that at least
+            # one metric isn't empty
+            return {lca_match[0]: entry}
+        else:
+            if self.ask_new_lca():
+                new_lca_type = self.ask_new_lca_type()
+
+                # TODO: handle duplicates
+
+                is_adding_fields = True
+                entry = {}
+
+                while is_adding_fields:
+                    field = self.ask_new_field()
+                    value = self.ask_lca_metric(field)
+                    entry[field] = value
+
+                    is_adding_fields = self.ask_continue_new_fields()
+            
+                return {new_lca_type: entry}
+
 
     def run(self):
         """
@@ -242,37 +278,12 @@ class LCAPrompt:
 
         while is_running:
             print("Entering LCA Information. Press Ctrl+C to quit.\n")
+
             lca_types = self._db.fetch_lca_types()
             lca_names = [t[0] for t in lca_types]
-            lca_type_entry = self.ask_lca_type(lca_names)
 
-            if lca_type_entry != 'Other':
-                lca_match = None
-                for lca_type in lca_types:
-                    if lca_type[0] == lca_type_entry:
-                        lca_match = lca_type
-                
-                entry = self.ask_lca_metrics(lca_match)
-                # we may want to add a check here to ensure that at least
-                # one metric isn't empty
-                results.append({lca_match[0]: entry})
-            else:
-                if self.ask_new_lca():
-                    new_lca_type = self.ask_new_lca_type()
-
-                    # TODO: handle duplicates
-
-                    is_adding_fields = True
-                    entry = {}
-
-                    while is_adding_fields:
-                        field = self.ask_new_field()
-                        value = self.ask_lca_metric(field)
-                        entry[field] = value
-
-                        is_adding_fields = self.ask_continue_new_fields()
-                    
-                    results.append({new_lca_type: entry})
+            entry = self.input_lca_data(lca_names, lca_types)
+            results.append(entry)
             
             is_running = self.ask_continue()
 
