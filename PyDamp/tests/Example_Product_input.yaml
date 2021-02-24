@@ -145,12 +145,20 @@ Flow_Data:
     - [false,false,false]
 
     
-# If providing LCA information, choose LCA types
-# Example:
-# LCA_Types:
-#    - Recipe
-#    - other
+# If providing LCA information, there are two options for data entry.
+# The first is to enter data manually:
+
 LCA_Data:
     - Recipe:
         co2_kg: 12.4
         so2_kg: 13.5
+LCA_Data:
+    - recipe:
+        co2_kg: 12.4
+        so2_kg: 13.5
+    - New:
+        stuff: 1.1
+        data: 4.5
+
+# The second is to use an interactive prompt to enter data:
+# LCA_Data: True

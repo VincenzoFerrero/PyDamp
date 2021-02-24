@@ -144,10 +144,10 @@ Flow_Data:
     - [[[40,2,external,43],[7,external,internal,7]],[40,2,external,41]]
     - [false,false,false]
 
-LCA: true
 
-# If providing LCA information, choose LCA types
-# Example:
+# If providing LCA information, there are two options for data entry.
+# The first is to enter data manually:
+
 # LCA_Data:
 #     - Recipe:
 #         co2_kg: 12.4
@@ -159,4 +159,6 @@ LCA: true
 #     - New:
 #         stuff: 1.1
 #         data: 4.5
+
+# The second is to use an interactive prompt to enter data:
 LCA_Data: True
