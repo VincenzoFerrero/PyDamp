@@ -511,15 +511,6 @@ def LCA_SQL_injection(product_dict, SQL_connection, system):
                 lca_data = (
                     field_names, system, type_id, lca_metrics
                 )
-                    
-                sql = """ INSERT INTO lca_data
-                          (SYSTEM,LCA_TYPE,%s)
-                          VALUES (%s,%s,%s)
-                    """ % lca_data
-
-                cursor.execute(sql)
-
-                results.append(lca_data)
 
             else:
                 # NOTE: we may want to enhance the matching logic in case of
@@ -555,6 +546,7 @@ def LCA_SQL_injection(product_dict, SQL_connection, system):
                 """ % lca_data
 
             cursor.execute(sql)
+            results.append(lca_data)
 
 
     return results

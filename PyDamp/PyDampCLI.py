@@ -112,9 +112,9 @@ class LCAPrompt:
         results = {}
         for field in fields:
             metric = self.ask_lca_metric(field)
-            if metric.strip() == "":
-                results[field] = metric
-            else:
+            # handles difficult field names like $
+            field = '"%s"' % field
+            if metric.strip() != "":
                 results[field] = float(metric)
         
         return results
@@ -231,6 +231,20 @@ class LCAPrompt:
         return answer['continue']
 
     
+    def ask_lifespan(self):
+        """
+        Prompts the User to enter a lifespan for the product.
+        """
+        lca_field_prompt = {
+            'type': 'input',
+            'name': 'lifespan',
+            'message': 'Enter the product lifespan',
+            'validate': LCAMetricValidator
+        }
+        answer = prompt(lca_field_prompt)
+        return answer['lifespan']
+
+    
     def input_lca_data(self, lca_names, lca_types):
         """Handles input of data for new/existing LCA types."""
         lca_type_entry = self.ask_lca_type(lca_names)
@@ -257,7 +271,7 @@ class LCAPrompt:
                 while is_adding_fields:
                     field = self.ask_new_field()
                     value = self.ask_lca_metric(field)
-                    entry[field] = value
+                    entry['"%s"' % field] = value
 
                     is_adding_fields = self.ask_continue_new_fields()
             
@@ -276,6 +290,9 @@ class LCAPrompt:
         results = []
         is_running = True
 
+        # ask for lifespan once, then apply to all entries
+        lifespan = self.ask_lifespan()
+
         while is_running:
             print("Entering LCA Information. Press Ctrl+C to quit.\n")
 
@@ -283,6 +300,9 @@ class LCAPrompt:
             lca_names = [t[0] for t in lca_types]
 
             entry = self.input_lca_data(lca_names, lca_types)
+            if lifespan:
+                for _, metrics in entry.items():
+                    metrics['lifespan'] = lifespan
             results.append(entry)
             
             is_running = self.ask_continue()
