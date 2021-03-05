@@ -160,5 +160,5 @@ Flow_Data:
 #         stuff: 1.1
 #         data: 4.5
 
-# The second is to use an interactive prompt to enter data:
+# The second is to use an interactive prompt to enter data (enter True to activate):
 LCA_Data: True
