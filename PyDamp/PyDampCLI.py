@@ -112,27 +112,10 @@ class LCAPrompt:
         results = {}
         for field in fields:
             metric = self.ask_lca_metric(field)
-            # handles difficult field names like $
-            field = '"%s"' % field
             if metric.strip() != "":
                 results[field] = float(metric)
         
         return results
-
-    
-    def validate_response(self, response):
-        """
-        Checks a user-provided input for validity. User inputs must either
-        be empty strings or floats.
-        """
-        if response == None or response.strip() == '':
-            return (True, '')
-
-        try:
-            return (True, float(response))
-        except:
-            print("\nLCA Metrics must be numbers (or empty).")
-            return False
 
     
     def ask_new_lca(self):
@@ -271,7 +254,7 @@ class LCAPrompt:
                 while is_adding_fields:
                     field = self.ask_new_field()
                     value = self.ask_lca_metric(field)
-                    entry['"%s"' % field] = value
+                    entry[field] = value
 
                     is_adding_fields = self.ask_continue_new_fields()
             
@@ -284,7 +267,7 @@ class LCAPrompt:
         entered is `True`. Otherwise it will assume the user has entered
         all LCA information in YAML form.
         """
-        if self._product_dict['LCA_Data'] != True:
+        if self._product_dict.get('LCA_Data') != True:
             return
 
         results = []

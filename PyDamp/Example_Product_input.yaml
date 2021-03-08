@@ -149,16 +149,14 @@ Flow_Data:
 # The first is to enter data manually:
 
 # LCA_Data:
-#     - Recipe:
-#         co2_kg: 12.4
-#         so2_kg: 13.5
-# LCA_Data:
-#     - recipe:
-#         co2_kg: 12.4
-#         so2_kg: 13.5
+#     - ReCiPe (EP):
+#         lifespan: 2
+#         species_yr: 12.4
+#         daly: 13.5
+#         $: 13
 #     - New:
 #         stuff: 1.1
 #         data: 4.5
 
 # The second is to use an interactive prompt to enter data (enter True to activate):
-LCA_Data: True
+# LCA_Data: True

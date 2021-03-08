@@ -489,7 +489,7 @@ def LCA_SQL_injection(product_dict, SQL_connection, system):
     cursor.execute("select * from lca_type")
     db_lca_types = cursor.fetchall()
 
-    LCA_Data = product_dict['LCA_Data']
+    LCA_Data = product_dict.get('LCA_Data', [])
 
     results = []
 
@@ -497,6 +497,7 @@ def LCA_SQL_injection(product_dict, SQL_connection, system):
         for lca_type, metrics in lca_entry.items():
             lca_match = None
             fields = metrics.keys()
+            fields = ['"%s"' % field for field in fields]
             values = map(str, metrics.values())
             field_names = ','.join(fields)
             lca_metrics = ','.join(values)
@@ -513,8 +514,6 @@ def LCA_SQL_injection(product_dict, SQL_connection, system):
                 )
 
             else:
-                # NOTE: we may want to enhance the matching logic in case of
-                # minor spelling/capitalization mistakes for LCA types and metric names.
                 sql = 'ALTER TABLE lca_data '
                             
                 # Add new columns to `lca_data`
@@ -526,12 +525,15 @@ def LCA_SQL_injection(product_dict, SQL_connection, system):
 
                 cursor.execute(sql)
 
+                # We can exclude `lifespan` from this list
+                new_lca_field_names = ','.join([name for name in fields if name != '"lifespan"'])
+
                 # Add new row to `lca_type`
                 sql = """ INSERT INTO lca_type
                           (TYPE,FIELDS) 
                           VALUES ('%s', '{%s}')
                           RETURNING id
-                      """ % (lca_type, field_names)
+                      """ % (lca_type, new_lca_field_names)
 
                 cursor.execute(sql)
                 (type_id,) = cursor.fetchone()
