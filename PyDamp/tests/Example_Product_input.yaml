@@ -50,7 +50,7 @@ System_Type: 1
 
 #To add more components enter a new line and follow the format
 
-##PLEASE THE FOLLOWING THE FORMAT##
+##PLEASE USE THE FOLLOWING THE FORMAT##
 #   - [Name,Description,Component Basis,Material]
 
 BOM:
@@ -58,6 +58,20 @@ BOM:
     - [Motor,converts elec. energy to pnuematic energy,115,11]
     - [Brush,sweeps up debris,46,15]
     - [Brush Housing, covers the brush spindle,50,15]
+
+
+# Gathers LCA information for a specific BOM. This section may be left empty, but
+# otherwise must account for all entries.
+
+#To add more components enter a new line and follow the format
+
+##PLEASE USE THE FOLLOWING THE FORMAT##
+#   - [Weight (float), Material (string), Manufacturing (string)]
+BOM_LCA:
+    - [2,plastic,abcd]
+    - [5,metal,abcd]
+    - [0.1,plastic,abcd]
+    - [0.3,plastic,abcd]
     
     
 ## SYSTEM ASSEMBLY INFORMATION
