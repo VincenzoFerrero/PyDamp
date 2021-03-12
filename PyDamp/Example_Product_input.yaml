@@ -68,6 +68,10 @@ BOM:
 ##PLEASE USE THE FOLLOWING THE FORMAT##
 #   - [Weight (float), Material (string), Manufacturing (string)]
 BOM_LCA:
+    - [2,plastic,abcd]
+    - [5,metal,abcd]
+    - [0.1,plastic,abcd]
+    - [0.3,plastic,abcd]
     
     
 ## SYSTEM ASSEMBLY INFORMATION

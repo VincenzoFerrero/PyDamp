@@ -320,6 +320,35 @@ def BOM_SQL_injection(product_dict,SQL_connection,system_index,user_index):
     return new_BOM_data
 
 
+def BOM_LCA_SQL_injection(product_dict, SQL_connection, system, BOM):
+    cursor = SQL_connection.cursor()
+
+    BOM_LCA = product_dict.get('BOM_LCA')
+
+    if not BOM_LCA or len(BOM_LCA) == 0:
+        return
+
+    new_entries = []
+
+    # Match LCA entries with artifacts, skipping first (system as artifact)
+    for idx, artifact in enumerate(BOM[1:]):
+        artifact_id = artifact[0]
+        system_id = artifact[8]
+
+        bom_lca = list(BOM_LCA[idx])
+        fields = ','.join(['WEIGHT', 'MATERIAL', 'MANUFACTURING', 'SYSTEM', 'ARTIFACT'])
+        bom_lca.extend([system_id, artifact_id])
+        new_entries.append(bom_lca)
+        values = ','.join(["'%s'" % val for val in bom_lca])
+
+        sql = """INSERT INTO artifact_lca (%s) VALUES (%s)""" % (fields, values)
+
+        cursor.execute(sql)
+
+    cursor.close()
+
+    return new_entries
+
 
 def Function_SQL_injection(product_dict,SQL_connection,BOM):
     
