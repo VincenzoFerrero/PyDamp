@@ -11,6 +11,7 @@ The following script is used to test the checking module of the PyDamp suite.
 
 """
 
+import copy
 
 import pytest
 
@@ -504,17 +505,95 @@ def test_check_flow_data25():
     assert str(err_info.value) == 'component 3 function 2 input in not in range of the flow index'  
     
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+ ## Testing LCA data inputs
+
+lca_1 = dict(input_dict)
+lca_1['LCA_Data'] = None
+
+lca_fail_2 = dict(input_dict)
+lca_fail_2['LCA_Data'] = [{'Recipe': {'co2_kg': 'bad'}}]
+
+lca_fail_3 = dict(input_dict)
+lca_fail_3['LCA_Data'] = [{'Recipe': {}}]
+
+
+def test_check_LCA_data1():
+    """Should allow users to opt out of inputting LCA Data."""
+    try:
+        PyDampCheck.check_lca_data(lca_1)
+    except:
+        pytest.fail('Users should be allowed to skip LCA Data.')
+
+def test_check_LCA_data2():
+    """`LCA_Data` includes non-numbers."""
+    with pytest.raises(AssertionError) as err_info:
+        PyDampCheck.check_lca_data(lca_fail_2)
+    assert str(err_info.value) == 'LCA Metrics must be numbers.'
+
+def test_check_LCA_data3():
+    """
+    The number of `LCA_Data` entries is zero.
+    """
+    with pytest.raises(AssertionError) as err_info:
+        PyDampCheck.check_lca_data(lca_fail_3)
+    msg = 'The number of LCA Data entries for "Recipe" must be greater than zero'
+    assert str(err_info.value) == msg
+
+
+# Testing LCA BOM data inputs
+
+bom_lca_1 = copy.deepcopy(input_dict)
+bom_lca_1['BOM_LCA'] = bom_lca_1['BOM_LCA'][1:]
+
+bom_lca_2 = copy.deepcopy(input_dict)
+bom_lca_2['BOM_LCA'][0][1] = ''
+
+bom_lca_3 = copy.deepcopy(input_dict)
+bom_lca_3['BOM_LCA'][0][0] = 'bad'
+
+bom_lca_4 = copy.deepcopy(input_dict)
+bom_lca_4['BOM_LCA'][0][1] = 1
+
+bom_lca_5 = copy.deepcopy(input_dict)
+bom_lca_5['BOM_LCA'][0][2] = 2
+
+
+def test_check_lca_bom_data_1():
+    """`LCA_BOM` should have the correct number of entries."""
+    with pytest.raises(AssertionError) as err_info:
+        PyDampCheck.check_BOM_LCA(bom_lca_1)
+    msg = ('The number of BOM entries (4) must equal the number of associated '
+            'LCA entries (3)')
+    assert str(err_info.value) == msg
+
+
+def test_check_lca_bom_data_2():
+    """`LCA_BOM` entries cannot have empty values."""
+    with pytest.raises(AssertionError) as err_info:
+        PyDampCheck.check_BOM_LCA(bom_lca_2)
+    msg = 'Entry values cannot be empty.'
+    assert str(err_info.value) == msg
+
+
+def test_check_lca_bom_data_3():
+    """`LCA_BOM` entry first value must be a number."""
+    with pytest.raises(AssertionError) as err_info:
+        PyDampCheck.check_BOM_LCA(bom_lca_3)
+    msg = 'First entry must be a number.'
+    assert str(err_info.value) == msg
+
+
+def test_check_lca_bom_data_4():
+    """`LCA_BOM` entry second value must be a string."""
+    with pytest.raises(AssertionError) as err_info:
+        PyDampCheck.check_BOM_LCA(bom_lca_4)
+    msg = 'Second entry must be a string.'
+    assert str(err_info.value) == msg
+
+
+def test_check_lca_bom_data_5():
+    """`LCA_BOM` entry second value must be a string."""
+    with pytest.raises(AssertionError) as err_info:
+        PyDampCheck.check_BOM_LCA(bom_lca_5)
+    msg = 'Third entry must be a string.'
+    assert str(err_info.value) == msg

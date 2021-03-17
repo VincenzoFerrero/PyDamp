@@ -20,6 +20,8 @@ import psycopg2
 import sys
 
 
+from PyDampCLI import PyDampCLI, DB
+
 try:
     import PyDamp.PyDamp_SQLconnection as osu_design_repo
     import PyDamp.PyDampCheck as Check
@@ -94,14 +96,16 @@ except NameError:
 
 
 Check.check_product_YAML(product_dict)
-
+PyDampCLI(product_dict, DB(connection))
 
 
 system = osu_design_repo.System_SQL_injection(product_dict,connection)
 user = osu_design_repo.User_SQL_injection(product_dict,connection)
 BOM = osu_design_repo.BOM_SQL_injection(product_dict,connection,system[0],user[0])
+BOM_LCA = osu_design_repo.BOM_LCA_SQL_injection(product_dict,connection,system[0],BOM)
 function = osu_design_repo.Function_SQL_injection(product_dict,connection,BOM)
 flow = osu_design_repo.Flow_SQL_injection(product_dict,connection,BOM,function)
+lca = osu_design_repo.LCA_SQL_injection(product_dict,connection, system[0])
 
 
 connection.commit()

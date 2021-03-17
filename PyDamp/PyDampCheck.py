@@ -241,6 +241,34 @@ def check_BOM(product_dict):
         assert component_material, 'component ' + str(i+1) + ' material requires material input'      
         assert type(component_material) == int, 'component ' + str(i+1) + ' material requires integer input'  
         assert 1 <= component_material <= 18, 'component ' + str(i+1) + ' material input not within range of index' 
+
+
+def check_BOM_LCA(product_dict):
+    """ Checks for errors in the `BOM_LCA` input
+    
+    Parameters - YAML for product information .dict
+    ----------
+    """   
+    BOM_LCA = product_dict.get('BOM_LCA')
+    BOM = product_dict.get('BOM')
+
+    # This field is optional
+    if not BOM_LCA or len(BOM_LCA) == 0:
+        return 
+
+    err = ('The number of BOM entries (%s) must equal the number of associated '
+            'LCA entries (%s)' % (len(BOM), len(BOM_LCA)))
+    assert len(BOM) == len(BOM_LCA), err
+
+    for entry in BOM_LCA:
+        assert len(entry) == 3, 'Each entry must have 3 fields (see documentation).'
+
+        if None in entry or '' in entry:
+            assert False, 'Entry values cannot be empty.'
+        
+        assert type(entry[0]) in [float, int], 'First entry must be a number.'
+        assert type(entry[1]) == str, 'Second entry must be a string.'
+        assert type(entry[2]) == str, 'Third entry must be a string.'
    
 
 def check_assembly_data(product_dict):
@@ -407,7 +435,30 @@ def check_flow_data(product_dict):
                     assert 0 <= Flow_of_component[3] <= 45, 'component ' + str(i+1) + ' function ' + str(k+1) +  ' input in not in range of the flow index'                
                 
 
-                    
+def check_lca_data(product_dict):
+    """
+    Checks for errors in the LCA input.
+
+    Parameters - YAML for product information .dict
+    ----------
+
+    Returns - None
+    -------
+    """   
+    LCA_Data = product_dict.get('LCA_Data')
+
+    # LCA data is not required, so we can short circuit if not provided.
+    if not LCA_Data or LCA_Data == True:
+        return
+
+    msg = 'The number of LCA Data entries for "%s" must be greater than zero'
+
+    for lca_entry in LCA_Data:
+        for name, metrics in lca_entry.items():
+            assert len(metrics) > 0, msg % name
+            for _, metric in metrics.items():
+                assert type(metric) in [float, int], 'LCA Metrics must be numbers.'
+
                 
 def check_product_YAML(input_dict):
     
@@ -420,7 +471,9 @@ def check_product_YAML(input_dict):
     check_BOM(input_dict)
     check_assembly_data(input_dict)
     check_function_data(input_dict)
+    check_BOM_LCA(input_dict)
     check_flow_data(input_dict)               
+    check_lca_data(input_dict)
             
 
 #

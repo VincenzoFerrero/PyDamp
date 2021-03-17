@@ -320,6 +320,35 @@ def BOM_SQL_injection(product_dict,SQL_connection,system_index,user_index):
     return new_BOM_data
 
 
+def BOM_LCA_SQL_injection(product_dict, SQL_connection, system, BOM):
+    cursor = SQL_connection.cursor()
+
+    BOM_LCA = product_dict.get('BOM_LCA')
+
+    if not BOM_LCA or len(BOM_LCA) == 0:
+        return
+
+    new_entries = []
+
+    # Match LCA entries with artifacts, skipping first (system as artifact)
+    for idx, artifact in enumerate(BOM[1:]):
+        artifact_id = artifact[0]
+        system_id = artifact[8]
+
+        bom_lca = list(BOM_LCA[idx])
+        fields = ','.join(['WEIGHT', 'MATERIAL', 'MANUFACTURING', 'SYSTEM', 'ARTIFACT'])
+        bom_lca.extend([system_id, artifact_id])
+        new_entries.append(bom_lca)
+        values = ','.join(["'%s'" % val for val in bom_lca])
+
+        sql = """INSERT INTO artifact_lca (%s) VALUES (%s)""" % (fields, values)
+
+        cursor.execute(sql)
+
+    cursor.close()
+
+    return new_entries
+
 
 def Function_SQL_injection(product_dict,SQL_connection,BOM):
     
@@ -482,3 +511,73 @@ def Flow_SQL_injection(product_dict,SQL_connection,BOM,function_data):
 
     return flow_data
 
+
+def LCA_SQL_injection(product_dict, SQL_connection, system):
+    # Fetch LCA types to match
+    cursor = SQL_connection.cursor()
+    cursor.execute("select * from lca_type")
+    db_lca_types = cursor.fetchall()
+
+    LCA_Data = product_dict.get('LCA_Data', [])
+
+    results = []
+
+    for lca_entry in LCA_Data:
+        for lca_type, metrics in lca_entry.items():
+            lca_match = None
+            fields = metrics.keys()
+            fields = ['"%s"' % field for field in fields]
+            values = map(str, metrics.values())
+            field_names = ','.join(fields)
+            lca_metrics = ','.join(values)
+
+            for lca in db_lca_types:
+                if lca_type == lca[0]:
+                    lca_match = lca
+
+            if lca_match:
+                _, _, type_id = lca_match
+
+                lca_data = (
+                    field_names, system, type_id, lca_metrics
+                )
+
+            else:
+                sql = 'ALTER TABLE lca_data '
+                            
+                # Add new columns to `lca_data`
+                columns = []
+                for field in fields:
+                    columns.append('ADD COLUMN IF NOT EXISTS %s NUMERIC' % field)
+                
+                sql += ', '.join(columns)
+
+                cursor.execute(sql)
+
+                # We can exclude `lifespan` from this list
+                new_lca_field_names = ','.join([name for name in fields if name != '"lifespan"'])
+
+                # Add new row to `lca_type`
+                sql = """ INSERT INTO lca_type
+                          (TYPE,FIELDS) 
+                          VALUES ('%s', '{%s}')
+                          RETURNING id
+                      """ % (lca_type, new_lca_field_names)
+
+                cursor.execute(sql)
+                (type_id,) = cursor.fetchone()
+                
+                lca_data = (
+                    field_names, system, type_id, lca_metrics
+                )
+
+            sql = """ INSERT INTO lca_data
+                    (SYSTEM,LCA_TYPE,%s)
+                    VALUES (%s,%s,%s)
+                """ % lca_data
+
+            cursor.execute(sql)
+            results.append(lca_data)
+
+
+    return results

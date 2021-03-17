@@ -42,12 +42,21 @@ System_Type:
 
 
 ## BILL OF MATERIAL INFORMATION
-##PLEASE THE FOLLOWING THE FORMAT##
+##PLEASE USE THE FOLLOWING THE FORMAT##
 #   - [Name,Description,Component Basis,Material]
 
 BOM:
     - 
     
+# Gathers LCA information for a specific BOM. This section may be left empty, but
+# otherwise must account for all entries.
+
+#To add more components enter a new line and follow the format
+
+##PLEASE USE THE FOLLOWING THE FORMAT##
+#   - [Weight (float), Material (string), Manufacturing (string)]
+BOM_LCA:
+
     
 ## SYSTEM ASSEMBLY INFORMATION
 
@@ -96,5 +105,19 @@ Function_Data:
 Flow_Data: 
     - 
     
-    
-    
+
+# If providing LCA information, there are two options for data entry.
+# The first is to enter data manually:
+
+# LCA_Data:
+#     - ReCiPe (EP):
+#         lifespan: 2
+#         species_yr: 12.4
+#         daly: 13.5
+#         $: 13
+#     - New:
+#         stuff: 1.1
+#         data: 4.5
+
+# The second is to use an interactive prompt to enter data (enter True to activate):
+# LCA_Data: True
